@@ -1,0 +1,133 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="UTF-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<title>Викторина</title>
+	<link rel="stylesheet" href="../css/game.css">
+</head>
+<body>
+	<div class="bg-decoration bottom-decoration"></div>
+	<div class="bg-decoration top-decoration"></div>
+
+	<div class="game">
+		<h2 id="question">Загрузка...</h2>
+		<div id="answers"></div>
+		<a href="index.html" class="back" onclick="window.location.reload()">Выйти</a>
+	</div>
+
+	<script>
+		const questions = [
+    { 
+        question: "Когда родился Александр Македонский?", 
+        answers: ["356 г. до н.э.", "323 г. до н.э.", "400 г. до н.э.", "300 г. до н.э."], 
+        correct: 0 
+    },
+    { 
+        question: "Какой титул носил Александр Македонский?", 
+        answers: ["Император Рима", "Царь Македонии", "Фараон Египта", "Король Персии"], 
+        correct: 1 
+    },
+    { 
+        question: "Кто был учителем Александра Македонского?", 
+        answers: ["Сократ", "Аристотель", "Платон", "Гомер"], 
+        correct: 1 
+    },
+    { 
+        question: "Какая битва считается одной из крупнейших побед Александра?", 
+        answers: ["Битва при Гавгамелах", "Битва при Саламине", "Битва при Термопилах", "Битва при Акции"], 
+        correct: 0 
+    },
+    { 
+        question: "В каком возрасте умер Александр Македонский?", 
+        answers: ["30 лет", "33 года", "40 лет", "35 лет"], 
+        correct: 3 
+    },
+    { 
+        question: "Какая империя была завоёвана Александром Македонским?", 
+        answers: ["Римская империя", "Персидская империя", "Китайская империя", "Монгольская империя"], 
+        correct: 1 
+    },
+    { 
+        question: "Как назывался конь Александра Македонского?", 
+        answers: ["Буцефал", "Пегас", "Аргос", "Селевк"], 
+        correct: 0 
+    },
+    { 
+        question: "Какой город был основан Александром Македонским в Египте?", 
+        answers: ["Александрия", "Мемфис", "Карфаген", "Луксор"], 
+        correct: 0 
+    },
+    { 
+        question: "Какая река была восточной границей завоеваний Александра Македонского?", 
+        answers: ["Нил", "Ганг", "Инд", "Тигр"], 
+        correct: 2 
+    },
+    { 
+        question: "Как называлась мать Александра Македонского?", 
+        answers: ["Олимпиада", "Клеопатра", "Екатерина", "Аспазия"], 
+        correct: 0 
+    },
+];
+
+
+		let currentQuestion = 0;
+		let correctAnswers = 0;
+
+		const questionElement = document.getElementById("question");
+		const answersElement = document.getElementById("answers");
+
+		function loadQuestion() {
+			if (currentQuestion < questions.length) {
+				const q = questions[currentQuestion];
+				questionElement.textContent = q.question;
+				answersElement.innerHTML = "";
+				q.answers.forEach((answer, index) => {
+					const button = document.createElement("div");
+					button.className = "otvet";
+					button.textContent = answer;
+					button.onclick = () => checkAnswer(index);
+					answersElement.appendChild(button);
+				});
+			} else {
+				showResult();
+			}
+		}
+
+		function checkAnswer(selected) {
+			const correctIndex = questions[currentQuestion].correct;
+			const buttons = document.querySelectorAll(".otvet");
+			if (selected === correctIndex) {
+				buttons[selected].classList.add("correct");
+				correctAnswers++;
+			} else {
+				buttons[selected].classList.add("incorrect");
+				buttons[correctIndex].classList.add("correct");
+			}
+			setTimeout(() => {
+				currentQuestion++;
+				loadQuestion();
+			}, 1000);
+		}
+
+		function showResult() {
+			questionElement.textContent = `Вы ответили правильно на ${correctAnswers} из ${questions.length}`;
+			let rating;
+			if (correctAnswers >= 8) {
+				rating = "Отлично! Ты справился!";
+			} else if (correctAnswers >= 6) {
+				rating = "Неплохо! Но надо немного подтянуть.";
+			} else if (correctAnswers >= 4) {
+				rating = "Неудовлетворительно, надо подтянуть.";
+			} else if (correctAnswers >= 1) {
+				rating = "Ой ей! Может, в следующий раз получится...";
+			} else {
+				rating = "Плохо! Просто отвратительно!";
+			}
+			answersElement.innerHTML = `<p>${rating}</p>`;
+		}
+
+		loadQuestion();
+	</script>
+</body>
+</html>
